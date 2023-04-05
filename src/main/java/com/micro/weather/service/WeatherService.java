@@ -36,14 +36,14 @@ public class WeatherService {
         Optional<WeatherEntity> weatherEntityOptional = weatherRepository.findFirstByRequestedCityNameOrderByUpdatedTimeDesc(city);
 
         // if there is no available data on db fetch from the weatherstack
-        if (weatherEntityOptional.isEmpty()) {
-            return WeatherDTO.convert(getWeatherFromWeatherStack(city));
-        }
 
-        if(weatherEntityOptional.get().getUpdatedTime().isBefore(LocalDateTime.now().minusSeconds(30))) {
-            return WeatherDTO.convert(getWeatherFromWeatherStack(city));
-        }
-        return WeatherDTO.convert(weatherEntityOptional.get());
+        return weatherEntityOptional.map(
+                weatherEntity -> {
+                    if (weatherEntity.getUpdatedTime().isBefore(LocalDateTime.now().minusMinutes(30))) {
+                        return WeatherDTO.convert(getWeatherFromWeatherStack(city));
+                    } return WeatherDTO.convert(weatherEntity);
+                }
+        ).orElseGet(() -> WeatherDTO.convert(getWeatherFromWeatherStack(city)));
     }
 
 
