@@ -6,7 +6,6 @@ import com.micro.weather.dto.WeatherDTO;
 import com.micro.weather.dto.WeatherResponse;
 import com.micro.weather.model.WeatherEntity;
 import com.micro.weather.repository.WeatherRepository;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +17,7 @@ import java.util.Optional;
 @Service
 public class WeatherService {
 
-    private static final String API_URL="http://api.weatherstack.com/current?access_key=da9f18823bc296bd66aded122241c128&query=";
+    private static final String API_URL = "http://api.weatherstack.com/current?access_key=da9f18823bc296bd66aded122241c128&query=";
 
     private final WeatherRepository weatherRepository;
 
@@ -41,10 +40,11 @@ public class WeatherService {
             return WeatherDTO.convert(getWeatherFromWeatherStack(city));
         }
 
+        if(weatherEntityOptional.get().getUpdatedTime().isBefore(LocalDateTime.now().minusSeconds(30))) {
+            return WeatherDTO.convert(getWeatherFromWeatherStack(city));
+        }
         return WeatherDTO.convert(weatherEntityOptional.get());
     }
-
-
 
 
     private WeatherEntity getWeatherFromWeatherStack(String city) {
@@ -60,9 +60,9 @@ public class WeatherService {
 
     // crate new weather entity and save to db
     private WeatherEntity saveWeatherEntity(String city, WeatherResponse weatherResponse) {
-        DateTimeFormatter dateTimeFormatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        WeatherEntity weatherEntity= new WeatherEntity(
+        WeatherEntity weatherEntity = new WeatherEntity(
                 city,
                 weatherResponse.location().name(),
                 weatherResponse.location().country(),

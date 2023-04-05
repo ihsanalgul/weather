@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 public class WeatherEntity {
