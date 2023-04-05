@@ -1,6 +1,6 @@
 ## [Weatherstack API](https://weatherstack.com)
 
-Limit request amount(free subscription indicates 250 requests) by using IP of client.
+Limit request amount(free subscription indicates 250 requests/month) by using IP of client.
 
 Some of the used technologies in this project:
 
