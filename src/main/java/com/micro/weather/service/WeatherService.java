@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import static com.micro.weather.constants.Constants.*;
+
 @Service
 public class WeatherService {
-
-    private static final String API_URL = "http://api.weatherstack.com/current?access_key=da9f18823bc296bd66aded122241c128&query=";
 
     private final WeatherRepository weatherRepository;
 
@@ -46,9 +46,9 @@ public class WeatherService {
         ).orElseGet(() -> WeatherDTO.convert(getWeatherFromWeatherStack(city)));
     }
 
-
     private WeatherEntity getWeatherFromWeatherStack(String city) {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(API_URL + city, String.class);
+        String url=getWeatherStackApiUrl(city);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
         try {
             WeatherResponse weatherResponse = objectMapper.readValue(responseEntity.getBody(), WeatherResponse.class);
@@ -56,6 +56,10 @@ public class WeatherService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getWeatherStackApiUrl(String city) {
+        return API_URL + ACCESS_KEY_PARAM + API_KEY + QUERY_PARAM + city;
     }
 
     // crate new weather entity and save to db
