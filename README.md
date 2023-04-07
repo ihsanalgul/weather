@@ -2,7 +2,7 @@
 
 Limit request amount(free subscription indicates 250 requests/month) by using IP of client.
 
-Some of the used technologies in this project:
+Some used technologies in this project:
 
 - Java 19
 - Kotlin
