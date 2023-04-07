@@ -10,3 +10,10 @@ spring:
 weather-stack:
   API_URL: ${API_URL:default}
   API_KEY: ${API_KEY:default}
+resilience4j:
+  ratelimiter:
+    instances:
+      basic:
+        limit-for-period: 2
+        limit-refresh-period: 1m
+        timeout-duration: 10s
