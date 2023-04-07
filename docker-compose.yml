@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  app:
+    image: 'weather-latest'
+    build:
+      context: .
+    ports:
+      - "9999:8080"
+    environment:
+      - "API_URL=${API_URL}"
+      - "API_KEY=${API_KEY}"

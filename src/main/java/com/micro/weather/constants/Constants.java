@@ -14,14 +14,14 @@ public class Constants {
     public static String QUERY_PARAM="&query=";
 
     // This can read application.yaml before spring context upload
-    @Value("${weather-stack.api-url}")
-    public void setApiUrl(String apiUrl) {
-        API_URL=apiUrl;
+    @Value("${weather-stack.API_URL}")
+    public void setApiUrl(String API_URL) {
+        Constants.API_URL=API_URL;
     }
 
-    @Value("${weather-stack.api-key}")
-    public void setApiKey(String apiKey) {
-        API_KEY = apiKey;
+    @Value("${weather-stack.API_KEY}")
+    public void setApiKey(String API_KEY) {
+        Constants.API_KEY = API_KEY;
     }
 
     public void setAccessKeyParam(String accessKeyParam) {

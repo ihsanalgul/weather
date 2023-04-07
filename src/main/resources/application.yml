@@ -6,7 +6,7 @@ spring:
     console:
       enabled: true
   config:
-    import: file:.env[.properties]
+    import: optional:file:.env[.properties]
 weather-stack:
-  api-url: http://api.weatherstack.com/current
-  api-key: ${API-KEY:default}
+  API_URL: ${API_URL:default}
+  API_KEY: ${API_KEY:default}
