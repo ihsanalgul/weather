@@ -7,6 +7,8 @@ import com.micro.weather.dto.WeatherResponse;
 import com.micro.weather.model.WeatherEntity;
 import com.micro.weather.repository.WeatherRepository;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,6 +33,8 @@ public class WeatherService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static final Logger logger= LoggerFactory.getLogger(WeatherService.class);
+
     public WeatherService(WeatherRepository weatherRepository, RestTemplate restTemplate) {
         this.weatherRepository = weatherRepository;
         this.restTemplate = restTemplate;
@@ -39,8 +43,8 @@ public class WeatherService {
     // returns db data
     @Cacheable(key = "#city")
     public WeatherDTO getWeatherByCityName(String city) {
+        logger.info("Requested city: "+city);//Enables to define response from caching or not
         Optional<WeatherEntity> weatherEntityOptional = weatherRepository.findFirstByRequestedCityNameOrderByUpdatedTimeDesc(city);
-
         // if there is no available data on db fetch from the weatherstack
         return weatherEntityOptional.map(
                 weatherEntity -> {
@@ -85,5 +89,7 @@ public class WeatherService {
     @CacheEvict(allEntries = true)
     @PostConstruct
     @Scheduled(fixedRateString = "10000")
-    public void clearCache() {}
+    public void clearCache() {
+        logger.info("Cache cleared!");
+    }
 }
