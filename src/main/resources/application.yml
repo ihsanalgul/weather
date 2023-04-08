@@ -17,3 +17,10 @@ resilience4j:
         limit-for-period: 2
         limit-refresh-period: 1m
         timeout-duration: 10s
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"
+          - prometheus
