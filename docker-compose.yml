@@ -27,5 +27,19 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
       weather-network:
+  grafana:
+    image: grafana/grafana-oss:8.5.2
+    pull_policy: always
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_DOMAIN=localhost
+    networks:
+      weather-network:
 networks:
   weather-network:
