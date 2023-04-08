@@ -6,7 +6,12 @@ import com.micro.weather.dto.WeatherDTO;
 import com.micro.weather.dto.WeatherResponse;
 import com.micro.weather.model.WeatherEntity;
 import com.micro.weather.repository.WeatherRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +22,7 @@ import java.util.Optional;
 import static com.micro.weather.constants.Constants.*;
 
 @Service
+@CacheConfig(cacheNames = {"weathers"})
 public class WeatherService {
 
     private final WeatherRepository weatherRepository;
@@ -31,12 +37,11 @@ public class WeatherService {
     }
 
     // returns db data
+    @Cacheable(key = "#city")
     public WeatherDTO getWeatherByCityName(String city) {
-
         Optional<WeatherEntity> weatherEntityOptional = weatherRepository.findFirstByRequestedCityNameOrderByUpdatedTimeDesc(city);
 
         // if there is no available data on db fetch from the weatherstack
-
         return weatherEntityOptional.map(
                 weatherEntity -> {
                     if (weatherEntity.getUpdatedTime().isBefore(LocalDateTime.now().minusMinutes(30))) {
@@ -76,4 +81,9 @@ public class WeatherService {
 
         return weatherRepository.save(weatherEntity);
     }
+
+    @CacheEvict(allEntries = true)
+    @PostConstruct
+    @Scheduled(fixedRateString = "10000")
+    public void clearCache() {}
 }
